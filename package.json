@@ -24,7 +24,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@musakonttori/accounts-client": "file:../musakonttori-accounts-client",
+    "@musakonttori/accounts-client": "github:JaakkoMaekelae/musakonttori-accounts-client#main",
     "jose": "^6.2.7"
   },
   "devDependencies": {
