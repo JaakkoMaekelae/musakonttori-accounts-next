@@ -24,10 +24,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@musakonttori/accounts-client": "github:JaakkoMaekelae/musakonttori-accounts-client#main",
     "jose": "^6.2.7"
   },
   "devDependencies": {
+    "@musakonttori/accounts-client": "github:JaakkoMaekelae/musakonttori-accounts-client#main",
     "@types/node": "^26.1.2",
     "tsup": "^8.3.5",
     "typescript": "^5.9.3"

@@ -6,5 +6,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ["next", "@musakonttori/accounts-client"],
+  external: ["next"],
+  noExternal: ["@musakonttori/accounts-client"],
 });
