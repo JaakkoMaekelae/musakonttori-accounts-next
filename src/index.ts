@@ -43,3 +43,7 @@ export { withErrorLogging } from "./wrapper";
 
 // Global error handler
 export { registerGlobalErrorHandler } from "./instrumentation";
+
+// Built-in route handlers
+export { GET as healthHandler } from "./health";
+export { GET as versionHandler } from "./version";

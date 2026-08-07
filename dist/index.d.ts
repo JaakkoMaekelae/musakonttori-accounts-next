@@ -127,4 +127,35 @@ declare function withErrorLogging(handler: RouteHandler): RouteHandler;
 
 declare function registerGlobalErrorHandler(): void;
 
-export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, withErrorLogging };
+/**
+ * GET /api/health
+ *
+ * Built-in health check. Import and use in any service:
+ *   export { GET } from "@musakonttori/accounts-next/health";
+ *
+ * Checks:
+ *   - Service is running
+ *   - DATABASE_URL is configured
+ *   - Accounts API is reachable (if configured)
+ */
+declare function GET$1(): Promise<NextResponse<{
+    status: string;
+    timestamp: string;
+    checks: Record<string, string>;
+}>>;
+
+/**
+ * GET /api/version
+ *
+ * Returns service version info. Import and use:
+ *   export { GET } from "@musakonttori/accounts-next/version";
+ */
+declare function GET(): Promise<NextResponse<{
+    service: string;
+    version: string;
+    node: string;
+    environment: string;
+    timestamp: string;
+}>>;
+
+export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, GET$1 as healthHandler, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, GET as versionHandler, withErrorLogging };

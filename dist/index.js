@@ -27,6 +27,7 @@ __export(src_exports, {
   generateCsrfToken: () => generateCsrfToken,
   getAccountsClient: () => getAccountsClient,
   getSession: () => getSession,
+  healthHandler: () => GET,
   logError: () => logError,
   logWarning: () => logWarning,
   loginHandler: () => loginHandler,
@@ -37,6 +38,7 @@ __export(src_exports, {
   setSessionCookie: () => setSessionCookie,
   shouldRefreshToken: () => shouldRefreshToken,
   verifyCsrf: () => verifyCsrf,
+  versionHandler: () => GET2,
   withErrorLogging: () => withErrorLogging
 });
 module.exports = __toCommonJS(src_exports);
@@ -405,6 +407,38 @@ function withErrorLogging(handler) {
     }
   };
 }
+
+// src/health.ts
+var import_server4 = require("next/server");
+async function GET() {
+  const checks = {
+    runtime: "ok",
+    database: process.env.DATABASE_URL || process.env.DIRECT_URL ? "configured" : "missing",
+    accounts_api: process.env.ACCOUNTS_API_URL ? "configured" : "not set",
+    service: process.env.ACCOUNTS_SERVICE_NAME || process.env.NEXT_PUBLIC_SITE_NAME || "unknown"
+  };
+  const allOk = Object.values(checks).every((v) => v !== "missing");
+  return import_server4.NextResponse.json(
+    {
+      status: allOk ? "healthy" : "degraded",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      checks
+    },
+    { status: allOk ? 200 : 503 }
+  );
+}
+
+// src/version.ts
+var import_server5 = require("next/server");
+async function GET2() {
+  return import_server5.NextResponse.json({
+    service: process.env.ACCOUNTS_SERVICE_NAME || "unknown",
+    version: process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0",
+    node: process.version,
+    environment: process.env.NODE_ENV || "development",
+    timestamp: (/* @__PURE__ */ new Date()).toISOString()
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AccountsClient,
@@ -414,6 +448,7 @@ function withErrorLogging(handler) {
   generateCsrfToken,
   getAccountsClient,
   getSession,
+  healthHandler,
   logError,
   logWarning,
   loginHandler,
@@ -424,6 +459,7 @@ function withErrorLogging(handler) {
   setSessionCookie,
   shouldRefreshToken,
   verifyCsrf,
+  versionHandler,
   withErrorLogging
 });
 //# sourceMappingURL=index.js.map

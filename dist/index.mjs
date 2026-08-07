@@ -362,6 +362,38 @@ function withErrorLogging(handler) {
     }
   };
 }
+
+// src/health.ts
+import { NextResponse as NextResponse4 } from "next/server";
+async function GET() {
+  const checks = {
+    runtime: "ok",
+    database: process.env.DATABASE_URL || process.env.DIRECT_URL ? "configured" : "missing",
+    accounts_api: process.env.ACCOUNTS_API_URL ? "configured" : "not set",
+    service: process.env.ACCOUNTS_SERVICE_NAME || process.env.NEXT_PUBLIC_SITE_NAME || "unknown"
+  };
+  const allOk = Object.values(checks).every((v) => v !== "missing");
+  return NextResponse4.json(
+    {
+      status: allOk ? "healthy" : "degraded",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      checks
+    },
+    { status: allOk ? 200 : 503 }
+  );
+}
+
+// src/version.ts
+import { NextResponse as NextResponse5 } from "next/server";
+async function GET2() {
+  return NextResponse5.json({
+    service: process.env.ACCOUNTS_SERVICE_NAME || "unknown",
+    version: process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0",
+    node: process.version,
+    environment: process.env.NODE_ENV || "development",
+    timestamp: (/* @__PURE__ */ new Date()).toISOString()
+  });
+}
 export {
   AccountsClient,
   accountsMiddleware,
@@ -370,6 +402,7 @@ export {
   generateCsrfToken,
   getAccountsClient,
   getSession,
+  GET as healthHandler,
   logError,
   logWarning,
   loginHandler,
@@ -380,6 +413,7 @@ export {
   setSessionCookie,
   shouldRefreshToken,
   verifyCsrf,
+  GET2 as versionHandler,
   withErrorLogging
 };
 //# sourceMappingURL=index.mjs.map
