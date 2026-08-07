@@ -115,4 +115,6 @@ type RouteHandler = (req: Request, context?: unknown) => Promise<NextResponse>;
  */
 declare function withErrorLogging(handler: RouteHandler): RouteHandler;
 
-export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, withErrorLogging };
+declare function registerGlobalErrorHandler(): void;
+
+export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, withErrorLogging };

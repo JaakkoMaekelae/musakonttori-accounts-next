@@ -32,6 +32,7 @@ __export(src_exports, {
   loginHandler: () => loginHandler,
   logoutHandler: () => logoutHandler,
   refreshHandler: () => refreshHandler,
+  registerGlobalErrorHandler: () => registerGlobalErrorHandler,
   registerHandler: () => registerHandler,
   setSessionCookie: () => setSessionCookie,
   shouldRefreshToken: () => shouldRefreshToken,
@@ -389,6 +390,19 @@ function withErrorLogging(handler) {
     }
   };
 }
+
+// src/instrumentation.ts
+var registered = false;
+function registerGlobalErrorHandler() {
+  if (registered) return;
+  registered = true;
+  process.on("unhandledRejection", (reason) => {
+    logError(reason, { route: "unhandledRejection" });
+  });
+  process.on("uncaughtException", (error) => {
+    logError(error, { route: "uncaughtException" });
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AccountsClient,
@@ -403,6 +417,7 @@ function withErrorLogging(handler) {
   loginHandler,
   logoutHandler,
   refreshHandler,
+  registerGlobalErrorHandler,
   registerHandler,
   setSessionCookie,
   shouldRefreshToken,

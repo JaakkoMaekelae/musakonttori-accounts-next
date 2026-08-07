@@ -40,3 +40,6 @@ export { logError, logWarning } from "./logger";
 
 // Error wrapper
 export { withErrorLogging } from "./wrapper";
+
+// Global error handler
+export { registerGlobalErrorHandler } from "./instrumentation";

@@ -347,6 +347,19 @@ function withErrorLogging(handler) {
     }
   };
 }
+
+// src/instrumentation.ts
+var registered = false;
+function registerGlobalErrorHandler() {
+  if (registered) return;
+  registered = true;
+  process.on("unhandledRejection", (reason) => {
+    logError(reason, { route: "unhandledRejection" });
+  });
+  process.on("uncaughtException", (error) => {
+    logError(error, { route: "uncaughtException" });
+  });
+}
 export {
   AccountsClient,
   accountsMiddleware,
@@ -360,6 +373,7 @@ export {
   loginHandler,
   logoutHandler,
   refreshHandler,
+  registerGlobalErrorHandler,
   registerHandler,
   setSessionCookie,
   shouldRefreshToken,
