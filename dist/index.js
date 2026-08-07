@@ -30,9 +30,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// node_modules/.pnpm/@musakonttori+accounts-client@file+..+musakonttori-accounts-client_next@16.3.0_@types+n_db8ae2b7bb53d7d776558ff64b1bea66/node_modules/@musakonttori/accounts-client/dist/index.js
+// node_modules/.pnpm/@musakonttori+accounts-client@https+++codeload.github.com+JaakkoMaekelae+musakonttori-a_0467c0b47a7c33f173d1376fb93c30f5/node_modules/@musakonttori/accounts-client/dist/index.js
 var require_dist = __commonJS({
-  "node_modules/.pnpm/@musakonttori+accounts-client@file+..+musakonttori-accounts-client_next@16.3.0_@types+n_db8ae2b7bb53d7d776558ff64b1bea66/node_modules/@musakonttori/accounts-client/dist/index.js"(exports2, module2) {
+  "node_modules/.pnpm/@musakonttori+accounts-client@https+++codeload.github.com+JaakkoMaekelae+musakonttori-a_0467c0b47a7c33f173d1376fb93c30f5/node_modules/@musakonttori/accounts-client/dist/index.js"(exports2, module2) {
     "use strict";
     var __defProp2 = Object.defineProperty;
     var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
