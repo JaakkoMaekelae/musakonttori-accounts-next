@@ -3,6 +3,10 @@ import type { ServiceConfig, UserPayload } from "@musakonttori/accounts-client";
 import { cookies } from "next/headers";
 import { logError } from "./logger";
 import { shouldRefreshToken } from "./csrf";
+import { registerGlobalErrorHandler } from "./instrumentation";
+
+// Auto-register on first import
+registerGlobalErrorHandler();
 
 export { type ServiceConfig, type UserPayload };
 

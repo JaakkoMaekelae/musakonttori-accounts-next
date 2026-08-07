@@ -109,7 +109,21 @@ function verifyCsrf(cookieToken, requestToken) {
   return crypto.subtle ? cookieToken === requestToken : cookieToken === requestToken;
 }
 
+// src/instrumentation.ts
+var registered = false;
+function registerGlobalErrorHandler() {
+  if (registered) return;
+  registered = true;
+  process.on("unhandledRejection", (reason) => {
+    logError(reason, { route: "unhandledRejection" });
+  });
+  process.on("uncaughtException", (error) => {
+    logError(error, { route: "uncaughtException" });
+  });
+}
+
 // src/session.ts
+registerGlobalErrorHandler();
 var _accounts = null;
 function getAccounts() {
   if (!_accounts) {
@@ -389,19 +403,6 @@ function withErrorLogging(handler) {
       );
     }
   };
-}
-
-// src/instrumentation.ts
-var registered = false;
-function registerGlobalErrorHandler() {
-  if (registered) return;
-  registered = true;
-  process.on("unhandledRejection", (reason) => {
-    logError(reason, { route: "unhandledRejection" });
-  });
-  process.on("uncaughtException", (error) => {
-    logError(error, { route: "uncaughtException" });
-  });
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
