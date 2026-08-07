@@ -1,10 +1,10 @@
 /**
  * Global error handler for API routes and server components.
- * Catches unhandled errors and logs them to console + HQ.
+ * Catches unhandled errors and logs them to:
+ *   1. console.error → Vercel logs (always works, even if HQ is down)
+ *   2. HQ aggregation endpoint (if ERROR_API_URL is set)
  *
- * Call this once in your app's instrumentation.ts or layout.tsx:
- *   import { registerGlobalErrorHandler } from "@musakonttori/accounts-next";
- *   registerGlobalErrorHandler();
+ * Auto-registered when any module imports from @musakonttori/accounts-next.
  */
 import { logError } from "./logger";
 
@@ -14,14 +14,11 @@ export function registerGlobalErrorHandler(): void {
   if (registered) return;
   registered = true;
 
-  // Catch unhandled promise rejections (async route handlers)
   process.on("unhandledRejection", (reason: unknown) => {
     logError(reason, { route: "unhandledRejection" });
   });
 
-  // Catch uncaught exceptions (sync errors)
   process.on("uncaughtException", (error: Error) => {
     logError(error, { route: "uncaughtException" });
-    // Don't exit — let the process continue for other requests
   });
 }

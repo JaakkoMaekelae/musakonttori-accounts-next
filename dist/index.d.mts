@@ -96,10 +96,20 @@ interface AccountsMiddlewareOptions {
  */
 declare function accountsMiddleware(opts?: AccountsMiddlewareOptions): (request: NextRequest) => Promise<NextResponse<unknown>>;
 
+/**
+ * Log an error. Writes to:
+ *   1. console.error → Vercel logs (permanent, searchable)
+ *   2. HQ /api/errors/ingest → centralized dashboard (fire-and-forget)
+ *
+ * Never throws. Safe to call anywhere.
+ */
 declare function logError(error: unknown, context?: {
     route?: string;
     userId?: string;
 }): void;
+/**
+ * Log a warning. Non-blocking.
+ */
 declare function logWarning(message: string, context?: {
     route?: string;
 }): void;

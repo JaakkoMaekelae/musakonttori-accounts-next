@@ -57,27 +57,28 @@ function sendToHq(payload) {
   }).catch(() => {
   });
 }
-function logError(error, context) {
+function createPayload(error, context) {
   const err = error instanceof Error ? error : new Error(String(error));
-  const payload = {
+  return {
     message: err.message,
-    stack: err.stack,
+    stack: process.env.NODE_ENV !== "production" ? err.stack : void 0,
     timestamp: (/* @__PURE__ */ new Date()).toISOString(),
     service: SERVICE_NAME,
     route: context?.route,
     userId: context?.userId
   };
-  console.error(`[${payload.service}] ${payload.message}`, payload.stack ? `
-${payload.stack}` : "");
+}
+function logError(error, context) {
+  const payload = createPayload(error, context);
+  console.error(
+    `[${payload.service}]${payload.route ? ` ${payload.route}` : ""} ${payload.message}`,
+    payload.stack ? `
+${payload.stack}` : ""
+  );
   sendToHq(payload);
 }
 function logWarning(message, context) {
-  const payload = {
-    message,
-    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-    service: SERVICE_NAME,
-    route: context?.route
-  };
+  const payload = createPayload(new Error(message), context);
   console.warn(`[${payload.service}] ${message}`);
   sendToHq(payload);
 }
