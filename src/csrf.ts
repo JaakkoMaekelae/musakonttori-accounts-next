@@ -39,13 +39,12 @@ export function generateCsrfToken(): { token: string; cookieName: string } {
 
 /**
  * Verify CSRF token matches between cookie and header/body.
+ * UUIDs are compared via strict equality; constant-time not needed for UUIDs.
  */
 export function verifyCsrf(
   cookieToken: string | undefined,
   requestToken: string | undefined,
 ): boolean {
   if (!cookieToken || !requestToken) return false;
-  return crypto.subtle
-    ? cookieToken === requestToken // Constant-time not needed for UUID comparison
-    : cookieToken === requestToken;
+  return cookieToken === requestToken;
 }

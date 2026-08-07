@@ -165,7 +165,7 @@ function generateCsrfToken() {
 }
 function verifyCsrf(cookieToken, requestToken) {
   if (!cookieToken || !requestToken) return false;
-  return crypto.subtle ? cookieToken === requestToken : cookieToken === requestToken;
+  return cookieToken === requestToken;
 }
 
 // src/instrumentation.ts

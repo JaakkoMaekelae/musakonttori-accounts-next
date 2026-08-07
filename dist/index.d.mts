@@ -47,6 +47,7 @@ declare function generateCsrfToken(): {
 };
 /**
  * Verify CSRF token matches between cookie and header/body.
+ * UUIDs are compared via strict equality; constant-time not needed for UUIDs.
  */
 declare function verifyCsrf(cookieToken: string | undefined, requestToken: string | undefined): boolean;
 
