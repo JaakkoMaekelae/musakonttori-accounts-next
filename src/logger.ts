@@ -1,3 +1,5 @@
+import { captureError } from "./sentry";
+
 const SERVICE_NAME = process.env.ACCOUNTS_SERVICE_NAME || "unknown";
 const HQ_ERROR_URL = process.env.ERROR_API_URL;
 
@@ -46,6 +48,9 @@ export function logError(error: unknown, context?: { route?: string; userId?: st
 
   // Secondary: HQ aggregation (best-effort)
   sendToHq(payload);
+
+  // Optional: Sentry (only when SENTRY_DSN is configured)
+  captureError(error, context);
 }
 
 /**

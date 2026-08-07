@@ -38,6 +38,9 @@ export { createAccountsClient, AccountsClient } from "@musakonttori/accounts-cli
 // Logger
 export { logError, logWarning } from "./logger";
 
+// Sentry
+export { captureError, isSentryEnabled } from "./sentry";
+
 // Error wrapper
 export { withErrorLogging } from "./wrapper";
 

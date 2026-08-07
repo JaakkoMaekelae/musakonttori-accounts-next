@@ -114,6 +114,13 @@ declare function logWarning(message: string, context?: {
     route?: string;
 }): void;
 
+declare function isSentryEnabled(): boolean;
+declare function captureError(error: unknown, context?: {
+    route?: string;
+    userId?: string;
+    tags?: Record<string, string>;
+}): void;
+
 type RouteHandler = (req: Request, context?: unknown) => Promise<NextResponse>;
 /**
  * Wrap a route handler with automatic error logging.
@@ -158,4 +165,4 @@ declare function GET(): Promise<NextResponse<{
     timestamp: string;
 }>>;
 
-export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, GET$1 as healthHandler, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, GET as versionHandler, withErrorLogging };
+export { type Session, type SessionUser, accountsMiddleware, captureError, clearSession, generateCsrfToken, getAccountsClient, getSession, GET$1 as healthHandler, isSentryEnabled, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, GET as versionHandler, withErrorLogging };

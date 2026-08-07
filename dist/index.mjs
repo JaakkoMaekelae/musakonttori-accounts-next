@@ -2,6 +2,59 @@
 import { createAccountsClient } from "@musakonttori/accounts-client";
 import { cookies } from "next/headers";
 
+// src/sentry.ts
+var SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
+function isSentryEnabled() {
+  return !!SENTRY_DSN;
+}
+function captureError(error, context) {
+  if (!SENTRY_DSN) return;
+  const err = error instanceof Error ? error : new Error(String(error));
+  const sentryKey = SENTRY_DSN.split("@")[0]?.split("//")[1] ?? "";
+  void fetch(`https://sentry.io/api/${sentryKey}/store/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Sentry-Auth": `Sentry sentry_version=7, sentry_key=${sentryKey.split(":")[0]}`
+    },
+    body: JSON.stringify({
+      event_id: crypto.randomUUID(),
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      level: "error",
+      platform: "javascript",
+      message: { formatted: err.message },
+      exception: {
+        values: [
+          {
+            type: err.name,
+            value: err.message,
+            stacktrace: err.stack ? { frames: parseStack(err.stack) } : void 0
+          }
+        ]
+      },
+      tags: {
+        service: process.env.ACCOUNTS_SERVICE_NAME || "unknown",
+        route: context?.route ?? "unknown",
+        environment: process.env.NODE_ENV ?? "development",
+        ...context?.tags
+      },
+      user: context?.userId ? { id: context.userId } : void 0,
+      release: process.env.NEXT_PUBLIC_APP_VERSION || "0.1.0",
+      breadcrumbs: [{ message: context?.route ?? "api_error", timestamp: Date.now() / 1e3 }]
+    })
+  }).catch(() => {
+  });
+}
+function parseStack(stack) {
+  return stack.split("\n").slice(1).map((line) => {
+    const match = line.match(/at\s+(.+?)\s+\((.+?):(\d+):(\d+)\)/) || line.match(/at\s+(.+?):(\d+):(\d+)/);
+    if (match) {
+      return { function: match[1], filename: match[2], lineno: parseInt(match[3]) };
+    }
+    return {};
+  }).filter((f) => f.filename);
+}
+
 // src/logger.ts
 var SERVICE_NAME = process.env.ACCOUNTS_SERVICE_NAME || "unknown";
 var HQ_ERROR_URL = process.env.ERROR_API_URL;
@@ -33,6 +86,7 @@ function logError(error, context) {
 ${payload.stack}` : ""
   );
   sendToHq(payload);
+  captureError(error, context);
 }
 function logWarning(message, context) {
   const payload = createPayload(new Error(message), context);
@@ -397,12 +451,14 @@ async function GET2() {
 export {
   AccountsClient,
   accountsMiddleware,
+  captureError,
   clearSession,
   createAccountsClient2 as createAccountsClient,
   generateCsrfToken,
   getAccountsClient,
   getSession,
   GET as healthHandler,
+  isSentryEnabled,
   logError,
   logWarning,
   loginHandler,
