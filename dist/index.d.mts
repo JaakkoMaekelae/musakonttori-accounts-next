@@ -104,4 +104,15 @@ declare function logWarning(message: string, context?: {
     route?: string;
 }): void;
 
-export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf };
+type RouteHandler = (req: Request, context?: unknown) => Promise<NextResponse>;
+/**
+ * Wrap a route handler with automatic error logging.
+ * Catches all errors, logs them to console + HQ, returns a clean error response.
+ *
+ * Usage:
+ *   export const GET = withErrorLogging(async (req) => { ... });
+ *   export const POST = withErrorLogging(async (req) => { ... });
+ */
+declare function withErrorLogging(handler: RouteHandler): RouteHandler;
+
+export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, withErrorLogging };

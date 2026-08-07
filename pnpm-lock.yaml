@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@musakonttori/accounts-client':
+        specifier: file:../musakonttori-accounts-client
+        version: file:../musakonttori-accounts-client(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
       jose:
         specifier: ^6.2.7
         version: 6.2.8
@@ -15,9 +18,6 @@ importers:
         specifier: '>=16'
         version: 16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
     devDependencies:
-      '@musakonttori/accounts-client':
-        specifier: github:JaakkoMaekelae/musakonttori-accounts-client#main
-        version: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/c7a72f2c0adbb5ba6093f78f991edf16a4eb77db(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
       '@types/node':
         specifier: ^26.1.2
         version: 26.1.2
@@ -364,9 +364,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/c7a72f2c0adbb5ba6093f78f991edf16a4eb77db':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/c7a72f2c0adbb5ba6093f78f991edf16a4eb77db}
-    version: 0.1.0
+  '@musakonttori/accounts-client@file:../musakonttori-accounts-client':
+    resolution: {directory: ../musakonttori-accounts-client, type: directory}
     engines: {node: '>=24'}
     peerDependencies:
       next: '>=16'
@@ -1086,7 +1085,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/c7a72f2c0adbb5ba6093f78f991edf16a4eb77db(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
+  '@musakonttori/accounts-client@file:../musakonttori-accounts-client(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
     dependencies:
       jose: 6.2.8
     optionalDependencies:

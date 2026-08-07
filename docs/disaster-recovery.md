@@ -62,17 +62,19 @@ reports it differently.
 
 ---
 
-### 2.3 Public Key Rotation Handling
+### 2.3 Accounts Signing Key Rotation
 
-**Impact:** When the Accounts signing keypair rotates, this adapter is what verifies tokens inside each
-product. If it cannot accept two public keys during the rotation window, key rotation becomes a
-platform-wide forced logout instead of a transparent operation.
+**Impact:** This adapter does **not** verify tokens — it forwards them to Accounts, which verifies with
+`ACCOUNTS_JWT_PUBLIC_KEY`. So when the Accounts keypair rotates, every outstanding session dies at the
+moment of the switch, in every product, with nothing this package can do to soften it.
 
 **Recovery procedure:**
-1. During an Accounts key rotation, verify the adapter's dual-key acceptance path before the private key
-   switches — see Section 4.2 of the Accounts plan.
-2. If dual acceptance is not supported, the rotation must be scheduled as a planned maintenance window
-   with a forced re-login, communicated in advance.
+1. Treat every Accounts key rotation as a planned platform-wide logout. Schedule it, announce it, and
+   confirm with product owners before the switch.
+2. After the switch, verify one real login per auth pattern (see Section 4.2).
+3. The permanent fix belongs here: accept the user JWT locally against one or two distributed public
+   keys, and fall back to the API only for permission checks and refresh. Until that ships, "transparent
+   rotation" is not achievable anywhere in the platform.
 3. Adding dual-key support here is the fix that turns a platform incident into a routine operation.
 
 ---

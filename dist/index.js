@@ -1,13 +1,8 @@
 "use strict";
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -20,173 +15,7 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// node_modules/.pnpm/@musakonttori+accounts-client@https+++codeload.github.com+JaakkoMaekelae+musakonttori-a_0467c0b47a7c33f173d1376fb93c30f5/node_modules/@musakonttori/accounts-client/dist/index.js
-var require_dist = __commonJS({
-  "node_modules/.pnpm/@musakonttori+accounts-client@https+++codeload.github.com+JaakkoMaekelae+musakonttori-a_0467c0b47a7c33f173d1376fb93c30f5/node_modules/@musakonttori/accounts-client/dist/index.js"(exports2, module2) {
-    "use strict";
-    var __defProp2 = Object.defineProperty;
-    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
-    var __getOwnPropNames2 = Object.getOwnPropertyNames;
-    var __hasOwnProp2 = Object.prototype.hasOwnProperty;
-    var __export2 = (target, all) => {
-      for (var name in all)
-        __defProp2(target, name, { get: all[name], enumerable: true });
-    };
-    var __copyProps2 = (to, from, except, desc) => {
-      if (from && typeof from === "object" || typeof from === "function") {
-        for (let key of __getOwnPropNames2(from))
-          if (!__hasOwnProp2.call(to, key) && key !== except)
-            __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });
-      }
-      return to;
-    };
-    var __toCommonJS2 = (mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod);
-    var src_exports2 = {};
-    __export2(src_exports2, {
-      AccountsClient: () => AccountsClient2,
-      createAccountsClient: () => createAccountsClient3
-    });
-    module2.exports = __toCommonJS2(src_exports2);
-    var import_jose2 = require("jose");
-    var import_jose22 = require("jose");
-    var ACCOUNTS_ISSUER = "accounts.musakonttori.fi";
-    var SERVICE_EXPIRY = "5m";
-    async function importKey(pem) {
-      return (0, import_jose22.importPKCS8)(pem, "RS256");
-    }
-    var AccountsClient2 = class {
-      apiUrl;
-      serviceName;
-      privateKey;
-      _keyPromise = null;
-      constructor(config) {
-        this.apiUrl = config.apiUrl.replace(/\/$/, "");
-        this.serviceName = config.serviceName;
-        this.privateKey = config.privateKey;
-      }
-      async getKey() {
-        if (!this._keyPromise) {
-          this._keyPromise = importKey(this.privateKey);
-        }
-        return this._keyPromise;
-      }
-      async createServiceToken() {
-        const key = await this.getKey();
-        return new import_jose2.SignJWT({ sub: this.serviceName }).setProtectedHeader({ alg: "RS256" }).setIssuedAt().setExpirationTime(SERVICE_EXPIRY).setIssuer(this.serviceName).setAudience(ACCOUNTS_ISSUER).sign(key);
-      }
-      async headers(userToken) {
-        const serviceToken = await this.createServiceToken();
-        return {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${serviceToken}`,
-          "X-User-Token": `Bearer ${userToken}`
-        };
-      }
-      async request(path, options) {
-        const { userToken, ...init } = options;
-        const headers = {
-          "Content-Type": "application/json",
-          ...init.headers
-        };
-        if (userToken) {
-          const serviceToken = await this.createServiceToken();
-          headers["Authorization"] = `Bearer ${serviceToken}`;
-          headers["X-User-Token"] = `Bearer ${userToken}`;
-        }
-        const res = await fetch(`${this.apiUrl}${path}`, { ...init, headers });
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(
-            `Accounts API error ${res.status}: ${body.error ?? res.statusText}`
-          );
-        }
-        return res.json();
-      }
-      async login(input) {
-        return this.request("/api/auth/login", {
-          method: "POST",
-          body: JSON.stringify(input)
-        });
-      }
-      async register(input) {
-        return this.request("/api/auth/register", {
-          method: "POST",
-          body: JSON.stringify(input)
-        });
-      }
-      async refreshToken(userToken) {
-        return this.request("/api/auth/refresh", {
-          method: "POST",
-          userToken,
-          body: JSON.stringify({})
-        });
-      }
-      async getMe(userToken) {
-        return this.request("/api/me", {
-          userToken
-        });
-      }
-      async getWorkspaces(userToken) {
-        return this.request("/api/me/workspaces", {
-          userToken
-        });
-      }
-      async checkPermission(userToken, product, opts) {
-        return this.request("/api/permissions/check", {
-          method: "POST",
-          userToken,
-          body: JSON.stringify({ product, ...opts })
-        });
-      }
-      async listPermissions(userToken, product) {
-        return this.request("/api/permissions/list", {
-          method: "POST",
-          userToken,
-          body: JSON.stringify({ product })
-        });
-      }
-      async getWorkspaceMembers(userToken, workspaceId) {
-        return this.request(`/api/workspaces/${workspaceId}/members`, {
-          userToken
-        });
-      }
-      async createWorkspace(userToken, input) {
-        return this.request("/api/workspaces", {
-          method: "POST",
-          userToken,
-          body: JSON.stringify(input)
-        });
-      }
-      async updateWorkspace(userToken, slug, input) {
-        return this.request(`/api/workspaces/${slug}`, {
-          method: "PATCH",
-          userToken,
-          body: JSON.stringify(input)
-        });
-      }
-      async inviteToWorkspace(userToken, slug, input) {
-        return this.request(`/api/workspaces/${slug}/invitations`, {
-          method: "POST",
-          userToken,
-          body: JSON.stringify(input)
-        });
-      }
-    };
-    function createAccountsClient3(config) {
-      return new AccountsClient2(config);
-    }
-  }
-});
 
 // src/index.ts
 var src_exports = {};
@@ -206,12 +35,13 @@ __export(src_exports, {
   registerHandler: () => registerHandler,
   setSessionCookie: () => setSessionCookie,
   shouldRefreshToken: () => shouldRefreshToken,
-  verifyCsrf: () => verifyCsrf
+  verifyCsrf: () => verifyCsrf,
+  withErrorLogging: () => withErrorLogging
 });
 module.exports = __toCommonJS(src_exports);
 
 // src/session.ts
-var import_accounts_client = __toESM(require_dist());
+var import_accounts_client = require("@musakonttori/accounts-client");
 var import_headers = require("next/headers");
 
 // src/logger.ts
@@ -533,7 +363,32 @@ function accountsMiddleware(opts = {}) {
 }
 
 // src/index.ts
-var import_accounts_client2 = __toESM(require_dist());
+var import_accounts_client2 = require("@musakonttori/accounts-client");
+
+// src/wrapper.ts
+var import_server3 = require("next/server");
+function withErrorLogging(handler) {
+  return async (req, context) => {
+    try {
+      return await handler(req, context);
+    } catch (err) {
+      const url = new URL(req.url);
+      logError(err, {
+        route: `${req.method} ${url.pathname}`,
+        userId: req.headers.get("x-user-id") ?? void 0
+      });
+      const message = err instanceof Error ? err.message : "Internal server error";
+      const status = message.includes("not found") || message.includes("NotFound") ? 404 : message.includes("unauthorized") || message.includes("forbidden") || message.includes("Unauthorized") ? 403 : message.includes("validation") || message.includes("invalid") || message.includes("required") ? 400 : 500;
+      return import_server3.NextResponse.json(
+        {
+          error: message,
+          ...process.env.NODE_ENV !== "production" && err instanceof Error ? { stack: err.stack } : {}
+        },
+        { status }
+      );
+    }
+  };
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AccountsClient,
@@ -551,6 +406,7 @@ var import_accounts_client2 = __toESM(require_dist());
   registerHandler,
   setSessionCookie,
   shouldRefreshToken,
-  verifyCsrf
+  verifyCsrf,
+  withErrorLogging
 });
 //# sourceMappingURL=index.js.map

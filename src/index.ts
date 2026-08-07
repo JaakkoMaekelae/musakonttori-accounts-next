@@ -37,3 +37,6 @@ export { createAccountsClient, AccountsClient } from "@musakonttori/accounts-cli
 
 // Logger
 export { logError, logWarning } from "./logger";
+
+// Error wrapper
+export { withErrorLogging } from "./wrapper";
