@@ -192,6 +192,43 @@ var require_dist = __commonJS({
 var import_accounts_client = __toESM(require_dist());
 import { cookies } from "next/headers";
 
+// src/logger.ts
+var SERVICE_NAME = process.env.ACCOUNTS_SERVICE_NAME || "unknown";
+var HQ_ERROR_URL = process.env.ERROR_API_URL;
+function sendToHq(payload) {
+  if (!HQ_ERROR_URL) return;
+  void fetch(`${HQ_ERROR_URL}/api/errors/ingest`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(() => {
+  });
+}
+function logError(error, context) {
+  const err = error instanceof Error ? error : new Error(String(error));
+  const payload = {
+    message: err.message,
+    stack: err.stack,
+    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+    service: SERVICE_NAME,
+    route: context?.route,
+    userId: context?.userId
+  };
+  console.error(`[${payload.service}] ${payload.message}`, payload.stack ? `
+${payload.stack}` : "");
+  sendToHq(payload);
+}
+function logWarning(message, context) {
+  const payload = {
+    message,
+    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+    service: SERVICE_NAME,
+    route: context?.route
+  };
+  console.warn(`[${payload.service}] ${message}`);
+  sendToHq(payload);
+}
+
 // src/csrf.ts
 import { decodeJwt } from "jose";
 var REFRESH_BUFFER_MS = 5 * 60 * 1e3;
@@ -257,7 +294,8 @@ async function getSession() {
     }
     const user = await accounts.getMe(token);
     return { user: { id: user.id, email: user.email, name: user.name } };
-  } catch {
+  } catch (err) {
+    logError(err, { route: "getSession" });
     try {
       cookieStore.delete(COOKIE_NAME);
     } catch {
@@ -484,6 +522,8 @@ export {
   generateCsrfToken,
   getAccountsClient,
   getSession,
+  logError,
+  logWarning,
   loginHandler,
   logoutHandler,
   refreshHandler,

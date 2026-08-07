@@ -34,3 +34,6 @@ export { accountsMiddleware } from "./middleware";
 
 // Re-export full client for advanced use
 export { createAccountsClient, AccountsClient } from "@musakonttori/accounts-client";
+
+// Logger
+export { logError, logWarning } from "./logger";

@@ -96,4 +96,12 @@ interface AccountsMiddlewareOptions {
  */
 declare function accountsMiddleware(opts?: AccountsMiddlewareOptions): (request: NextRequest) => Promise<NextResponse<unknown>>;
 
-export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, loginHandler, logoutHandler, refreshHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf };
+declare function logError(error: unknown, context?: {
+    route?: string;
+    userId?: string;
+}): void;
+declare function logWarning(message: string, context?: {
+    route?: string;
+}): void;
+
+export { type Session, type SessionUser, accountsMiddleware, clearSession, generateCsrfToken, getAccountsClient, getSession, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf };

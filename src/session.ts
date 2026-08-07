@@ -1,6 +1,7 @@
 import { createAccountsClient } from "@musakonttori/accounts-client";
 import type { ServiceConfig, UserPayload } from "@musakonttori/accounts-client";
 import { cookies } from "next/headers";
+import { logError } from "./logger";
 import { shouldRefreshToken } from "./csrf";
 
 export { type ServiceConfig, type UserPayload };
@@ -64,7 +65,8 @@ export async function getSession(): Promise<Session | null> {
 
     const user = await accounts.getMe(token);
     return { user: { id: user.id, email: user.email, name: user.name } };
-  } catch {
+  } catch (err) {
+    logError(err, { route: "getSession" });
     // Token invalid — clear it
     try {
       cookieStore.delete(COOKIE_NAME);
