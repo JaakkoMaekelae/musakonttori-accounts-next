@@ -1,0 +1,38 @@
+{
+  "name": "@musakonttori/accounts-next",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Next.js integration for Musakonttori Accounts — cookie session, CSRF, middleware, route handlers",
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@musakonttori/accounts-client": "file:../musakonttori-accounts-client",
+    "jose": "^6.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "next": ">=16"
+  }
+}
