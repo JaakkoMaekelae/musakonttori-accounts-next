@@ -38,7 +38,7 @@ export function accountsMiddleware(opts: AccountsMiddlewareOptions = {}) {
 
   const allPublic = [...defaultPublic, ...publicRoutes];
 
-  return async function middleware(request: NextRequest) {
+  return async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const response = NextResponse.next({ request });
 

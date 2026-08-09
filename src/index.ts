@@ -30,7 +30,7 @@ export { generateCsrfToken, verifyCsrf, shouldRefreshToken } from "./csrf";
 export { loginHandler, registerHandler, refreshHandler, logoutHandler } from "./handlers";
 
 // Middleware
-export { accountsMiddleware } from "./middleware";
+export { accountsMiddleware } from "./proxy";
 
 // Re-export full client for advanced use
 export { createAccountsClient, AccountsClient } from "@musakonttori/accounts-client";
