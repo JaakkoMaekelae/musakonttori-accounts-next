@@ -84,3 +84,7 @@ epäonnistuu:
 
 `--no-verify` ei koskaan ole oikea vastaus epäonnistuneeseen tarkistukseen — se ei
 korjaa virhettä, se vain piilottaa sen seuraavalle, joka pullaa reposta.
+
+### NEVER use --no-verify or force push
+
+`git commit --no-verify`, `git push --no-verify`, and `git push --force*` are FORBIDDEN. No exceptions. If hooks fail, fix the root cause — never bypass them.
