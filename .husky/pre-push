@@ -1,0 +1,20 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running TypeScript check..."
+npx tsc --noEmit --pretty || {
+  echo "❌ TypeScript errors found. Fix before pushing."
+  exit 1
+}
+
+echo "🏗️ Running build..."
+BUILD_CMD="npx next build"
+if ! grep -q '"next"' package.json 2>/dev/null; then
+  BUILD_CMD="echo 'No Next.js — build skipped (TSC passed)'"
+fi
+eval "$BUILD_CMD" || {
+  echo "❌ Build failed. Fix before pushing."
+  exit 1
+}
+
+echo "✅ Pre-push checks passed."
