@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@musakonttori/accounts-client':
         specifier: github:JaakkoMaekelae/musakonttori-accounts-client
-        version: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/bc9c8d19242cccdde7f9f2e043546cfa715dd00d(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
+        version: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/76af2c181ee1a3eebfe0d66625b33038a579b6ad(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
       jose:
         specifier: ^6.2.7
         version: 6.2.8
@@ -364,8 +364,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/bc9c8d19242cccdde7f9f2e043546cfa715dd00d':
-    resolution: {gitHosted: true, integrity: sha512-1SpTit0cmRyCO3059vD7yCH2/W7YeoiplmGVakQNY721nuimpqAX1l11pQwC7BvWTxAvj8+qAh0co4KCBdiw8A==, tarball: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/bc9c8d19242cccdde7f9f2e043546cfa715dd00d}
+  '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/76af2c181ee1a3eebfe0d66625b33038a579b6ad':
+    resolution: {gitHosted: true, integrity: sha512-b/gedwnZuOgO6rPq61iiFyIzdiVhX1z+sjtEgfs9hy5rehMLUwFtWehPIzprufjGE062KPB4Goqv9Da11YjfMg==, tarball: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/76af2c181ee1a3eebfe0d66625b33038a579b6ad}
     version: 0.1.0
     engines: {node: '>=24'}
     peerDependencies:
@@ -1086,7 +1086,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/bc9c8d19242cccdde7f9f2e043546cfa715dd00d(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
+  '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/76af2c181ee1a3eebfe0d66625b33038a579b6ad(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
     dependencies:
       jose: 6.2.8
     optionalDependencies:
