@@ -21,7 +21,9 @@
   ],
   "scripts": {
     "build": "tsup",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@musakonttori/accounts-client": "github:JaakkoMaekelae/musakonttori-accounts-client",
@@ -30,7 +32,9 @@
   "devDependencies": {
     "@types/node": "^26.1.2",
     "tsup": "^8.3.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.0",
+    "@vitejs/plugin-react": "^4.3.0"
   },
   "peerDependencies": {
     "next": ">=16"

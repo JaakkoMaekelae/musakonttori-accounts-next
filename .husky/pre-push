@@ -1,5 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
+. "$(dirname "$0")/gitguard.sh"
 
 echo "🔍 Running TypeScript check..."
 npx tsc --noEmit --pretty || {
