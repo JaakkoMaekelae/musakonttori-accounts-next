@@ -595,7 +595,7 @@ packages:
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
   '@musakonttori/accounts-client@https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/d57cb4ea68d30875be9cb9bc68500822ec164bb2':
-    resolution: {gitHosted: true, integrity: sha512-UIjCjt/eDJWz4UPmtZZglEnPXusjTU7bcCJunHSaRXpwQEHMlFSaEv3Qg1jhMYREjXd0dtg368YEiZ+7PDvUWg==, tarball: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/d57cb4ea68d30875be9cb9bc68500822ec164bb2}
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/JaakkoMaekelae/musakonttori-accounts-client/tar.gz/d57cb4ea68d30875be9cb9bc68500822ec164bb2}
     version: 0.1.0
     engines: {node: '>=24'}
     peerDependencies:
