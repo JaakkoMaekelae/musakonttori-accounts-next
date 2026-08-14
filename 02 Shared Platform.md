@@ -12,6 +12,8 @@ Build shared capabilities once and allow all Musakonttori products to consume th
 
 The goal is to avoid five or seven separate implementations of authentication, organizations, billing, permissions, notifications and support.
 
+> **Status 2026-08-14:** Identity and authentication are now realized across all products — consumer login via accounts (social login included), admin via Clerk + HQ-authz, impersonation via the shared @musakonttori/auth JWT. See MUSAKONTTORI_ARCHITECTURE.md §7.3.
+
 ## Shared Identity
 
 - User ID
@@ -192,6 +194,8 @@ See [[00 Musakonttori HQ]].
 - Delivery logs
 
 ## Shared Feature Flags
+
+See [[MUSAKONTTORI_FEATURE_FLAGS]] for the full design.
 
 Target:
 

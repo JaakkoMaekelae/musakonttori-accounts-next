@@ -9,7 +9,7 @@ updated: 2026-08-12
 
 | Capability | Current | Target |
 |-----------|---------|--------|
-| Identity | Per-product (Clerk) | Unified via Clerk orgs |
+| Identity | Unified via accounts (consumer) + Clerk/HQ (admin) | Unified via accounts + social login + MFA |
 | Organizations | Per-product | Shared org model |
 | Roles | Per-product | Cross-product RBAC |
 | Permissions | Per-product | Central entitlement engine |
@@ -23,10 +23,10 @@ updated: 2026-08-12
 | Search | Per-product | Unified search |
 | Analytics | Stageflow + Ticketing | Shared analytics pipeline |
 | Audit | Per-product | Central audit log |
-| Feature Flags | N/A | Shared feature flag system |
+| Feature Flags | N/A | [[MUSAKONTTORI_FEATURE_FLAGS]] - shared feature flag system |
 | API | Per-product | Unified API gateway |
 | Webhooks | Per-product | Central webhook hub |
-| Admin | Per-product (HQ) | Unified Super Admin |
+| Admin | Clerk + HQ-authz (checkAdminAccess) | Unified Super Admin |
 
 ## Priority Order
 
