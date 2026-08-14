@@ -1,4 +1,5 @@
 import * as _musakonttori_accounts_client from '@musakonttori/accounts-client';
+import { FullUserResponse, Membership, Workspace, ProductListResponse, PermissionResult } from '@musakonttori/accounts-client';
 export { AccountsClient, CreateWorkspaceInput, FullUserResponse, InviteInput, LoginInput, LoginResponse, PermissionResult, RegisterInput, RegisterResponse, ServiceConfig, UpdateWorkspaceInput, UserPayload, Workspace, WorkspacePermission, createAccountsClient } from '@musakonttori/accounts-client';
 import { NextResponse, NextRequest } from 'next/server';
 
@@ -10,6 +11,12 @@ interface SessionUser {
 interface Session {
     user: SessionUser;
 }
+/**
+ * Get the raw user JWT from the mk-session cookie.
+ * Automatically refreshes the token if it's about to expire.
+ * Returns null if no valid token exists.
+ */
+declare function getUserToken(): Promise<string | null>;
 /**
  * Get the current session from the mk-session cookie.
  * Automatically refreshes the token if it's about to expire.
@@ -31,6 +38,39 @@ declare function clearSession(): Promise<void>;
  * Get the raw accounts client instance (for permission checks etc).
  */
 declare function getAccountsClient(): _musakonttori_accounts_client.AccountsClient;
+
+type AccountsErrorCode = "AUTHENTICATION_REQUIRED" | "EMAIL_VERIFICATION_REQUIRED" | "MEMBERSHIP_REQUIRED" | "MEMBERSHIP_SUSPENDED" | "ORGANIZATION_NOT_FOUND" | "PERMISSION_DENIED" | "PRODUCT_ACCESS_REQUIRED" | "ENTITLEMENT_REQUIRED";
+declare class AccountsError extends Error {
+    readonly code: AccountsErrorCode;
+    constructor(code: AccountsErrorCode, message?: string);
+}
+/** Full current user (profile + memberships). Throws AUTHENTICATION_REQUIRED. */
+declare function getCurrentUser(): Promise<FullUserResponse>;
+/** All organizations/workspaces the current user belongs to. */
+declare function getOrganizations(): Promise<Workspace[]>;
+/** One organization by id, or null. */
+declare function getOrganization(workspaceId: string): Promise<Workspace | null>;
+/** Membership for the given organization, or null. */
+declare function getMembership(workspaceId: string): Promise<Membership | null>;
+interface PermissionCheck {
+    action?: string;
+    resourceType?: string;
+    resourceId?: string;
+}
+/** can(user, action, resource, context) — true if allowed. */
+declare function can(product: string, opts?: PermissionCheck): Promise<boolean>;
+/** requirePermission — throws AccountsError(PERMISSION_DENIED) if not allowed. */
+declare function requirePermission(product: string, opts?: PermissionCheck): Promise<PermissionResult>;
+/** Products the current user/org may access. */
+declare function listProducts(): Promise<ProductListResponse>;
+/**
+ * Remember the last-used organization context. This is remembered state only
+ * (§53) — it is NOT authorization. Authorization always comes from
+ * requirePermission/can via the token.
+ */
+declare function setActiveWorkspace(workspaceId: string): Promise<void>;
+/** Read the remembered organization context, or null. */
+declare function getActiveWorkspace(): Promise<string | null>;
 
 /**
  * Check if a JWT needs refresh (within 5 min of expiry, or iat > 7 days ago).
@@ -166,4 +206,4 @@ declare function GET(): Promise<NextResponse<{
     timestamp: string;
 }>>;
 
-export { type Session, type SessionUser, accountsMiddleware, captureError, clearSession, generateCsrfToken, getAccountsClient, getSession, GET$1 as healthHandler, isSentryEnabled, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, setSessionCookie, shouldRefreshToken, verifyCsrf, GET as versionHandler, withErrorLogging };
+export { AccountsError, type AccountsErrorCode, type PermissionCheck, type Session, type SessionUser, accountsMiddleware, can, captureError, clearSession, generateCsrfToken, getAccountsClient, getActiveWorkspace, getCurrentUser, getMembership, getOrganization, getOrganizations, getSession, getUserToken, GET$1 as healthHandler, isSentryEnabled, listProducts, logError, logWarning, loginHandler, logoutHandler, refreshHandler, registerGlobalErrorHandler, registerHandler, requirePermission, setActiveWorkspace, setSessionCookie, shouldRefreshToken, verifyCsrf, GET as versionHandler, withErrorLogging };

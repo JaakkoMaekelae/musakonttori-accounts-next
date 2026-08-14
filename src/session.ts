@@ -43,36 +43,50 @@ const COOKIE_OPTIONS = {
 };
 
 /**
- * Get the current session from the mk-session cookie.
+ * Get the raw user JWT from the mk-session cookie.
  * Automatically refreshes the token if it's about to expire.
- * Returns null if no valid session exists.
+ * Returns null if no valid token exists.
  */
-export async function getSession(): Promise<Session | null> {
+export async function getUserToken(): Promise<string | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
 
   const accounts = getAccounts();
 
-  try {
-    // Auto-refresh if token is close to expiry
-    if (shouldRefreshToken(token)) {
-      try {
-        const { token: newToken } = await accounts.refreshToken(token);
-        cookieStore.set(COOKIE_NAME, newToken, COOKIE_OPTIONS);
-        const user = await accounts.getMe(newToken);
-        return { user: { id: user.id, email: user.email, name: user.name } };
-      } catch {
-        // Refresh failed — try current token anyway
-      }
+  // Auto-refresh if token is close to expiry
+  if (shouldRefreshToken(token)) {
+    try {
+      const { token: newToken } = await accounts.refreshToken(token);
+      cookieStore.set(COOKIE_NAME, newToken, COOKIE_OPTIONS);
+      return newToken;
+    } catch {
+      // Refresh failed — fall through to current token
     }
+  }
 
+  return token;
+}
+
+/**
+ * Get the current session from the mk-session cookie.
+ * Automatically refreshes the token if it's about to expire.
+ * Returns null if no valid session exists.
+ */
+export async function getSession(): Promise<Session | null> {
+  const token = await getUserToken();
+  if (!token) return null;
+
+  const accounts = getAccounts();
+
+  try {
     const user = await accounts.getMe(token);
     return { user: { id: user.id, email: user.email, name: user.name } };
   } catch (err) {
     logError(err, { route: "getSession" });
     // Token invalid — clear it
     try {
+      const cookieStore = await cookies();
       cookieStore.delete(COOKIE_NAME);
     } catch {
       // ignore

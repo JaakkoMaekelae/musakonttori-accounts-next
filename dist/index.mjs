@@ -156,26 +156,32 @@ var COOKIE_OPTIONS = {
   maxAge: 60 * 60 * 24 * 7
   // 7 days (cookie lives longer than token; refresh extends)
 };
-async function getSession() {
+async function getUserToken() {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
   const accounts = getAccounts();
-  try {
-    if (shouldRefreshToken(token)) {
-      try {
-        const { token: newToken } = await accounts.refreshToken(token);
-        cookieStore.set(COOKIE_NAME, newToken, COOKIE_OPTIONS);
-        const user2 = await accounts.getMe(newToken);
-        return { user: { id: user2.id, email: user2.email, name: user2.name } };
-      } catch {
-      }
+  if (shouldRefreshToken(token)) {
+    try {
+      const { token: newToken } = await accounts.refreshToken(token);
+      cookieStore.set(COOKIE_NAME, newToken, COOKIE_OPTIONS);
+      return newToken;
+    } catch {
     }
+  }
+  return token;
+}
+async function getSession() {
+  const token = await getUserToken();
+  if (!token) return null;
+  const accounts = getAccounts();
+  try {
     const user = await accounts.getMe(token);
     return { user: { id: user.id, email: user.email, name: user.name } };
   } catch (err) {
     logError(err, { route: "getSession" });
     try {
+      const cookieStore = await cookies();
       cookieStore.delete(COOKIE_NAME);
     } catch {
     }
@@ -202,6 +208,69 @@ async function clearSession() {
 }
 function getAccountsClient() {
   return getAccounts();
+}
+
+// src/sdk.ts
+import { cookies as cookies2 } from "next/headers";
+var AccountsError = class extends Error {
+  code;
+  constructor(code, message) {
+    super(message ?? code);
+    this.name = "AccountsError";
+    this.code = code;
+  }
+};
+async function requireToken() {
+  const token = await getUserToken();
+  if (!token) throw new AccountsError("AUTHENTICATION_REQUIRED");
+  return token;
+}
+async function getCurrentUser() {
+  const token = await requireToken();
+  return getAccountsClient().getMe(token);
+}
+async function getOrganizations() {
+  const token = await requireToken();
+  return getAccountsClient().getWorkspaces(token);
+}
+async function getOrganization(workspaceId) {
+  const workspaces = await getOrganizations();
+  return workspaces.find((w) => w.id === workspaceId) ?? null;
+}
+async function getMembership(workspaceId) {
+  const user = await getCurrentUser();
+  return user.memberships.find((m) => m.workspaceId === workspaceId) ?? null;
+}
+async function can(product, opts) {
+  const token = await requireToken();
+  const res = await getAccountsClient().checkPermission(token, product, opts);
+  return res.allowed;
+}
+async function requirePermission(product, opts) {
+  const token = await requireToken();
+  const res = await getAccountsClient().checkPermission(token, product, opts);
+  if (!res.allowed) throw new AccountsError("PERMISSION_DENIED");
+  return res;
+}
+async function listProducts() {
+  const token = await requireToken();
+  return getAccountsClient().getProducts();
+}
+var WORKSPACE_COOKIE = "mk-workspace";
+var WORKSPACE_COOKIE_OPTIONS = {
+  httpOnly: false,
+  secure: true,
+  sameSite: "lax",
+  path: "/",
+  maxAge: 60 * 60 * 24 * 30
+};
+async function setActiveWorkspace(workspaceId) {
+  const cookieStore = await cookies2();
+  cookieStore.set(WORKSPACE_COOKIE, workspaceId, WORKSPACE_COOKIE_OPTIONS);
+}
+async function getActiveWorkspace() {
+  const cookieStore = await cookies2();
+  return cookieStore.get(WORKSPACE_COOKIE)?.value ?? null;
 }
 
 // src/handlers.ts
@@ -450,15 +519,24 @@ async function GET2() {
 }
 export {
   AccountsClient,
+  AccountsError,
   accountsMiddleware,
+  can,
   captureError,
   clearSession,
   createAccountsClient2 as createAccountsClient,
   generateCsrfToken,
   getAccountsClient,
+  getActiveWorkspace,
+  getCurrentUser,
+  getMembership,
+  getOrganization,
+  getOrganizations,
   getSession,
+  getUserToken,
   GET as healthHandler,
   isSentryEnabled,
+  listProducts,
   logError,
   logWarning,
   loginHandler,
@@ -466,6 +544,8 @@ export {
   refreshHandler,
   registerGlobalErrorHandler,
   registerHandler,
+  requirePermission,
+  setActiveWorkspace,
   setSessionCookie,
   shouldRefreshToken,
   verifyCsrf,

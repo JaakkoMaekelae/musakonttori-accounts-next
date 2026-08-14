@@ -88,3 +88,10 @@ korjaa virhettä, se vain piilottaa sen seuraavalle, joka pullaa reposta.
 ### NEVER use --no-verify or force push
 
 `git commit --no-verify`, `git push --no-verify`, and `git push --force*` are FORBIDDEN. No exceptions. If hooks fail, fix the root cause — never bypass them.
+
+## i18n — Tekstit kieliavaimina (PAKOLLINEN)
+
+- Kaikki käyttöliittymätekstit kieliavaimina i18n-käännöksinä — ei kovakoodattuja literaaleja.
+- Ei kieliin sidottuja merkkijonoja komponenteissa: JSX-teksti, `placeholder`, `title`, `aria-label`, `alt`, `label`, `description`.
+- Next.js-projekteissa `next-intl`: avaimet `messages/{locale}.json`, muoto `"page.section.key"`. Oletuskieli `fi`, toinen `en`.
+- Jaetut kirjastokomponentit: tekstit propseina tai kuluttajan `Intl`-kontekstista, ei kirjaston sisältä.

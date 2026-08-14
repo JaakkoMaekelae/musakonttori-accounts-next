@@ -21,15 +21,24 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var src_exports = {};
 __export(src_exports, {
   AccountsClient: () => import_accounts_client2.AccountsClient,
+  AccountsError: () => AccountsError,
   accountsMiddleware: () => accountsMiddleware,
+  can: () => can,
   captureError: () => captureError,
   clearSession: () => clearSession,
   createAccountsClient: () => import_accounts_client2.createAccountsClient,
   generateCsrfToken: () => generateCsrfToken,
   getAccountsClient: () => getAccountsClient,
+  getActiveWorkspace: () => getActiveWorkspace,
+  getCurrentUser: () => getCurrentUser,
+  getMembership: () => getMembership,
+  getOrganization: () => getOrganization,
+  getOrganizations: () => getOrganizations,
   getSession: () => getSession,
+  getUserToken: () => getUserToken,
   healthHandler: () => GET,
   isSentryEnabled: () => isSentryEnabled,
+  listProducts: () => listProducts,
   logError: () => logError,
   logWarning: () => logWarning,
   loginHandler: () => loginHandler,
@@ -37,6 +46,8 @@ __export(src_exports, {
   refreshHandler: () => refreshHandler,
   registerGlobalErrorHandler: () => registerGlobalErrorHandler,
   registerHandler: () => registerHandler,
+  requirePermission: () => requirePermission,
+  setActiveWorkspace: () => setActiveWorkspace,
   setSessionCookie: () => setSessionCookie,
   shouldRefreshToken: () => shouldRefreshToken,
   verifyCsrf: () => verifyCsrf,
@@ -203,26 +214,32 @@ var COOKIE_OPTIONS = {
   maxAge: 60 * 60 * 24 * 7
   // 7 days (cookie lives longer than token; refresh extends)
 };
-async function getSession() {
+async function getUserToken() {
   const cookieStore = await (0, import_headers.cookies)();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
   const accounts = getAccounts();
-  try {
-    if (shouldRefreshToken(token)) {
-      try {
-        const { token: newToken } = await accounts.refreshToken(token);
-        cookieStore.set(COOKIE_NAME, newToken, COOKIE_OPTIONS);
-        const user2 = await accounts.getMe(newToken);
-        return { user: { id: user2.id, email: user2.email, name: user2.name } };
-      } catch {
-      }
+  if (shouldRefreshToken(token)) {
+    try {
+      const { token: newToken } = await accounts.refreshToken(token);
+      cookieStore.set(COOKIE_NAME, newToken, COOKIE_OPTIONS);
+      return newToken;
+    } catch {
     }
+  }
+  return token;
+}
+async function getSession() {
+  const token = await getUserToken();
+  if (!token) return null;
+  const accounts = getAccounts();
+  try {
     const user = await accounts.getMe(token);
     return { user: { id: user.id, email: user.email, name: user.name } };
   } catch (err) {
     logError(err, { route: "getSession" });
     try {
+      const cookieStore = await (0, import_headers.cookies)();
       cookieStore.delete(COOKIE_NAME);
     } catch {
     }
@@ -249,6 +266,69 @@ async function clearSession() {
 }
 function getAccountsClient() {
   return getAccounts();
+}
+
+// src/sdk.ts
+var import_headers2 = require("next/headers");
+var AccountsError = class extends Error {
+  code;
+  constructor(code, message) {
+    super(message ?? code);
+    this.name = "AccountsError";
+    this.code = code;
+  }
+};
+async function requireToken() {
+  const token = await getUserToken();
+  if (!token) throw new AccountsError("AUTHENTICATION_REQUIRED");
+  return token;
+}
+async function getCurrentUser() {
+  const token = await requireToken();
+  return getAccountsClient().getMe(token);
+}
+async function getOrganizations() {
+  const token = await requireToken();
+  return getAccountsClient().getWorkspaces(token);
+}
+async function getOrganization(workspaceId) {
+  const workspaces = await getOrganizations();
+  return workspaces.find((w) => w.id === workspaceId) ?? null;
+}
+async function getMembership(workspaceId) {
+  const user = await getCurrentUser();
+  return user.memberships.find((m) => m.workspaceId === workspaceId) ?? null;
+}
+async function can(product, opts) {
+  const token = await requireToken();
+  const res = await getAccountsClient().checkPermission(token, product, opts);
+  return res.allowed;
+}
+async function requirePermission(product, opts) {
+  const token = await requireToken();
+  const res = await getAccountsClient().checkPermission(token, product, opts);
+  if (!res.allowed) throw new AccountsError("PERMISSION_DENIED");
+  return res;
+}
+async function listProducts() {
+  const token = await requireToken();
+  return getAccountsClient().getProducts();
+}
+var WORKSPACE_COOKIE = "mk-workspace";
+var WORKSPACE_COOKIE_OPTIONS = {
+  httpOnly: false,
+  secure: true,
+  sameSite: "lax",
+  path: "/",
+  maxAge: 60 * 60 * 24 * 30
+};
+async function setActiveWorkspace(workspaceId) {
+  const cookieStore = await (0, import_headers2.cookies)();
+  cookieStore.set(WORKSPACE_COOKIE, workspaceId, WORKSPACE_COOKIE_OPTIONS);
+}
+async function getActiveWorkspace() {
+  const cookieStore = await (0, import_headers2.cookies)();
+  return cookieStore.get(WORKSPACE_COOKIE)?.value ?? null;
 }
 
 // src/handlers.ts
@@ -498,15 +578,24 @@ async function GET2() {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AccountsClient,
+  AccountsError,
   accountsMiddleware,
+  can,
   captureError,
   clearSession,
   createAccountsClient,
   generateCsrfToken,
   getAccountsClient,
+  getActiveWorkspace,
+  getCurrentUser,
+  getMembership,
+  getOrganization,
+  getOrganizations,
   getSession,
+  getUserToken,
   healthHandler,
   isSentryEnabled,
+  listProducts,
   logError,
   logWarning,
   loginHandler,
@@ -514,6 +603,8 @@ async function GET2() {
   refreshHandler,
   registerGlobalErrorHandler,
   registerHandler,
+  requirePermission,
+  setActiveWorkspace,
   setSessionCookie,
   shouldRefreshToken,
   verifyCsrf,

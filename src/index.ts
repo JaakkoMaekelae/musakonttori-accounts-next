@@ -21,7 +21,22 @@ export type {
 } from "@musakonttori/accounts-client";
 
 // Session management
-export { getSession, setSessionCookie, clearSession, getAccountsClient } from "./session";
+export { getSession, getUserToken, setSessionCookie, clearSession, getAccountsClient } from "./session";
+
+// Server-side SDK (spec §148/§151/§152)
+export {
+  getCurrentUser,
+  getOrganizations,
+  getOrganization,
+  getMembership,
+  can,
+  requirePermission,
+  listProducts,
+  setActiveWorkspace,
+  getActiveWorkspace,
+  AccountsError,
+} from "./sdk";
+export type { AccountsErrorCode, PermissionCheck } from "./sdk";
 
 // CSRF
 export { generateCsrfToken, verifyCsrf, shouldRefreshToken } from "./csrf";
