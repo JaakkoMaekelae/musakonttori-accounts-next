@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 import { logError } from "./logger";
 
 type RouteHandler = (req: Request, context?: unknown) => Promise<NextResponse>;

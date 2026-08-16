@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 import type { LoginInput, RegisterInput } from "@musakonttori/accounts-client";
 import { getAccountsClient, setSessionCookie, clearSession } from "./session";
 import { generateCsrfToken, verifyCsrf } from "./csrf";

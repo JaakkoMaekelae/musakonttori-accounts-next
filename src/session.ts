@@ -1,6 +1,6 @@
 import { createAccountsClient } from "@musakonttori/accounts-client";
 import type { ServiceConfig, UserPayload } from "@musakonttori/accounts-client";
-import { cookies } from "next/headers";
+import { cookies } from "next/headers.js";
 import { logError } from "./logger";
 import { shouldRefreshToken } from "./csrf";
 import { registerGlobalErrorHandler } from "./instrumentation";

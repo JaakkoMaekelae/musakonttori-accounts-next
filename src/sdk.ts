@@ -4,7 +4,7 @@
 // listProducts, switchContext + standard error codes.
 
 import { getAccountsClient, getUserToken } from "./session";
-import { cookies } from "next/headers";
+import { cookies } from "next/headers.js";
 import type {
   FullUserResponse,
   Workspace,

@@ -1,7 +1,7 @@
 import * as _musakonttori_accounts_client from '@musakonttori/accounts-client';
 import { FullUserResponse, Membership, Workspace, ProductListResponse, PermissionResult } from '@musakonttori/accounts-client';
 export { AccountsClient, CreateWorkspaceInput, FullUserResponse, InviteInput, LoginInput, LoginResponse, PermissionResult, RegisterInput, RegisterResponse, ServiceConfig, UpdateWorkspaceInput, UserPayload, Workspace, WorkspacePermission, createAccountsClient } from '@musakonttori/accounts-client';
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server.js';
 
 interface SessionUser {
     id: string;

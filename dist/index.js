@@ -58,7 +58,7 @@ module.exports = __toCommonJS(src_exports);
 
 // src/session.ts
 var import_accounts_client = require("@musakonttori/accounts-client");
-var import_headers = require("next/headers");
+var import_headers = require("next/headers.js");
 
 // src/sentry.ts
 var SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
@@ -269,7 +269,7 @@ function getAccountsClient() {
 }
 
 // src/sdk.ts
-var import_headers2 = require("next/headers");
+var import_headers2 = require("next/headers.js");
 var AccountsError = class extends Error {
   code;
   constructor(code, message) {
@@ -332,7 +332,7 @@ async function getActiveWorkspace() {
 }
 
 // src/handlers.ts
-var import_server = require("next/server");
+var import_server = require("next/server.js");
 async function loginHandler(req) {
   const csrfCookie = req.headers.get("cookie")?.match(/mk-csrf=([^;]+)/)?.[1];
   const csrfHeader = req.headers.get("x-csrf-token");
@@ -439,7 +439,7 @@ async function logoutHandler() {
 }
 
 // src/proxy.ts
-var import_server2 = require("next/server");
+var import_server2 = require("next/server.js");
 var COOKIE_NAME2 = "mk-session";
 function accountsMiddleware(opts = {}) {
   const {
@@ -520,7 +520,7 @@ function accountsMiddleware(opts = {}) {
 var import_accounts_client2 = require("@musakonttori/accounts-client");
 
 // src/wrapper.ts
-var import_server3 = require("next/server");
+var import_server3 = require("next/server.js");
 function withErrorLogging(handler) {
   return async (req, context) => {
     try {
@@ -545,7 +545,7 @@ function withErrorLogging(handler) {
 }
 
 // src/health.ts
-var import_server4 = require("next/server");
+var import_server4 = require("next/server.js");
 async function GET() {
   const checks = {
     runtime: "ok",
@@ -565,7 +565,7 @@ async function GET() {
 }
 
 // src/version.ts
-var import_server5 = require("next/server");
+var import_server5 = require("next/server.js");
 async function GET2() {
   return import_server5.NextResponse.json({
     service: process.env.ACCOUNTS_SERVICE_NAME || "unknown",

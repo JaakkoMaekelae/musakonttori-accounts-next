@@ -38,10 +38,13 @@ Kaikki musakonttori-projektit noudattaa näitä sääntöjä. Poikkeuksia ei ole
 
 Kaikki tietokantakyselyt tehdään Prisma ORM:llä: `db.user.findMany()`, `db.user.create()`, `db.user.update()`, jne. Ei poikkeuksia.
 
-## 5. Uudelleenkäytettävät komponentit
+## 5. Uudelleenkäytettävät komponentit — @musakonttori/ui pakollinen
 
+- **Käytä aina `@musakonttori/ui`-pakettia.** UI-komponentit otetaan ensisijaisesti sieltä — ei rakenneta itse.
+- **Ennen kuin teet uuden komponentin** — tarkista onko `@musakonttori/ui`:ssa jo vastaava. Jos löytyy, käytä sitä.
+- **Ei rinnakkaisia paikallisia toteutuksia** komponenteille, jotka ovat jo `@musakonttori/ui`:ssa.
+- Jos sama komponentti löytyy kahdesta projektista → se siirretään `@musakonttori/ui`:hin.
 - Älä copypastea komponenttia projektien välillä.
-- Jos sama komponentti löytyy kahdesta projektista → se kuuluu `@musakonttori/ui`.
 
 ### musakonttori-ui — jaetut UI-komponentit
 
@@ -51,7 +54,7 @@ Kaikki yhteiset komponentit menevät `musakonttori-ui`-projektiin:
 - Layout-komponentit (PageHeader, Sidebar, Container)
 - Brand-komponentit (Logo, Footer, ThemeToggle)
 
-**Sääntö:** Ennen kuin teet uuden komponentin — tarkista onko `@musakonttori/ui`:ssa jo vastaava. Jos ei, mieti kuuluisiko uusi komponentti sinne.
+**Sääntö:** Uusi UI-komponentti rakennetaan vain, jos sitä ei ole `@musakonttori/ui`:ssa — ja jos se on yleiskäyttöinen, se lisätään sinne.
 
 Käyttö projektissa:
 ```tsx

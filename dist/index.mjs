@@ -1,6 +1,6 @@
 // src/session.ts
 import { createAccountsClient } from "@musakonttori/accounts-client";
-import { cookies } from "next/headers";
+import { cookies } from "next/headers.js";
 
 // src/sentry.ts
 var SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
@@ -211,7 +211,7 @@ function getAccountsClient() {
 }
 
 // src/sdk.ts
-import { cookies as cookies2 } from "next/headers";
+import { cookies as cookies2 } from "next/headers.js";
 var AccountsError = class extends Error {
   code;
   constructor(code, message) {
@@ -274,7 +274,7 @@ async function getActiveWorkspace() {
 }
 
 // src/handlers.ts
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server.js";
 async function loginHandler(req) {
   const csrfCookie = req.headers.get("cookie")?.match(/mk-csrf=([^;]+)/)?.[1];
   const csrfHeader = req.headers.get("x-csrf-token");
@@ -381,7 +381,7 @@ async function logoutHandler() {
 }
 
 // src/proxy.ts
-import { NextResponse as NextResponse2 } from "next/server";
+import { NextResponse as NextResponse2 } from "next/server.js";
 var COOKIE_NAME2 = "mk-session";
 function accountsMiddleware(opts = {}) {
   const {
@@ -462,7 +462,7 @@ function accountsMiddleware(opts = {}) {
 import { createAccountsClient as createAccountsClient2, AccountsClient } from "@musakonttori/accounts-client";
 
 // src/wrapper.ts
-import { NextResponse as NextResponse3 } from "next/server";
+import { NextResponse as NextResponse3 } from "next/server.js";
 function withErrorLogging(handler) {
   return async (req, context) => {
     try {
@@ -487,7 +487,7 @@ function withErrorLogging(handler) {
 }
 
 // src/health.ts
-import { NextResponse as NextResponse4 } from "next/server";
+import { NextResponse as NextResponse4 } from "next/server.js";
 async function GET() {
   const checks = {
     runtime: "ok",
@@ -507,7 +507,7 @@ async function GET() {
 }
 
 // src/version.ts
-import { NextResponse as NextResponse5 } from "next/server";
+import { NextResponse as NextResponse5 } from "next/server.js";
 async function GET2() {
   return NextResponse5.json({
     service: process.env.ACCOUNTS_SERVICE_NAME || "unknown",
